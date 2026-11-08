@@ -72,4 +72,16 @@ class ExperimentTests(unittest.TestCase):
                 else:self.assertEqual(a,b)
             for name in names:compare(parse(root/name),parse(Path(__file__).resolve().parents[1]/name))
 
+    def test_bounded_artifacts_restore_identical_full_report(self):
+        from unittest.mock import patch
+        from marginlab import experiment
+        original=experiment.saved()
+        with tempfile.TemporaryDirectory() as d:
+            file=Path(d)/'report.json'
+            with patch.object(experiment,'ARTIFACT',file):
+                experiment.write_artifacts(original)
+                self.assertEqual(experiment.saved(),original)
+                self.assertTrue(all(p.stat().st_size<600000 for p in Path(d).glob('*.json')))
+                self.assertEqual(len(list(Path(d).glob('*.json'))),12)
+
 if __name__=='__main__':unittest.main()
