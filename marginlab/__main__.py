@@ -22,9 +22,17 @@ def main():
     a=sub.add_parser('audit');a.add_argument('--report');a=sub.add_parser('predict');a.add_argument('--input',required=True);a.add_argument('--report');a.add_argument('--model-id')
     a=sub.add_parser('certificate');a.add_argument('--model-id');a.add_argument('--report');a.add_argument('--output',required=True)
     a=sub.add_parser('verify-certificate');a.add_argument('--input',required=True)
+    a=sub.add_parser('box');a.add_argument('--model-id');a.add_argument('--report');a.add_argument('--input',required=True);a.add_argument('--output',required=True)
+    a=sub.add_parser('verify-box');a.add_argument('--input',required=True)
     args=p.parse_args()
     try:
-        if args.command=='certificate':
+        if args.command=='box':
+            from .box import from_report,verify
+            r=read_json(args.report) if args.report else saved();id=args.model_id or r['selected_id'];proof=from_report(r,id,read_json(args.input));Path(args.output).write_text(json.dumps(proof,separators=(',',':'),allow_nan=False)+'\n');out=dict(output=args.output,model_id=id,**verify(proof))
+        elif args.command=='verify-box':
+            from .box import verify
+            out=verify(read_json(args.input))
+        elif args.command=='certificate':
             from .certificate import produce,verify
             r=read_json(args.report) if args.report else saved();id=args.model_id or r['selected_id'];item=next((a for a in r['candidates'] if a['id']==id),None)
             if item is None:raise ValueError('unknown model ID')
