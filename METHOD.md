@@ -94,3 +94,8 @@ The complete report is assembled from `marginlab/artifacts/report.json`, eight r
 ## Cross-platform reproduction
 
 Floating-point reductions can change near-tied pair choices: the published artifact has 275 updates for linear C=0.01, while a Python 3.10 CI run took 267. Reproduction requires the same protocol, selected configuration, stop status and all train/validation/test confusion counts, overlapping numerical primal/dual objective intervals and full pair replay. It does not require identical update counts or dual coefficients, which need not be unique. The full-data intervals are still numerical, with a comparison slack of 5e-7 times (1 + maximum absolute primal value), not exact bounds. The holdout-poison test compares two fresh fits in the same runtime and requires exactly identical fitted models, pair histories and validation metrics. Independent metric recomputation allows 1e-12 times (1 + absolute hinge) for the mean hinge reduction; confusion counts remain exact. No saved model, score, stopping tolerance or data split is changed by these test corrections.
+
+
+## Exact represented linear extension (v0.2)
+
+The original numerical gaps above remain numerical. A separate extension constructs exact rational primal and repaired-dual feasible witnesses for the four saved linear models. It does not change any fitted coefficient, prediction, split, pair history or old objective. [CERTIFICATE.md](CERTIFICATE.md) derives the repair and weak-duality interval, identifies the declared binary64 problem, and separates mathematical validity from source matching. The independent Fraction and BigInt readers do not call the optimizer. RBF and generalization bounds are not supported.
