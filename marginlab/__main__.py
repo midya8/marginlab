@@ -20,9 +20,19 @@ def main():
     p=argparse.ArgumentParser(description='Inspectable soft-margin classification, offline, not clinical validation');sub=p.add_subparsers(dest='command',required=True)
     sub.add_parser('report');sub.add_parser('controls');a=sub.add_parser('fit');a.add_argument('--output',required=True);a.add_argument('--budget',type=int,default=50000)
     a=sub.add_parser('audit');a.add_argument('--report');a=sub.add_parser('predict');a.add_argument('--input',required=True);a.add_argument('--report');a.add_argument('--model-id')
+    a=sub.add_parser('certificate');a.add_argument('--model-id');a.add_argument('--report');a.add_argument('--output',required=True)
+    a=sub.add_parser('verify-certificate');a.add_argument('--input',required=True)
     args=p.parse_args()
     try:
-        if args.command=='report':
+        if args.command=='certificate':
+            from .certificate import produce,verify
+            r=read_json(args.report) if args.report else saved();id=args.model_id or r['selected_id'];item=next((a for a in r['candidates'] if a['id']==id),None)
+            if item is None:raise ValueError('unknown model ID')
+            proof=produce(item['model']);Path(args.output).write_text(json.dumps(proof,separators=(',',':'),allow_nan=False)+'\n');out=dict(output=args.output,model_id=id,**verify(proof))
+        elif args.command=='verify-certificate':
+            from .verify_certificate import check
+            out=check(read_json(args.input))
+        elif args.command=='report':
             r=saved();out={k:r[k] for k in ('selected_id','protocol','baselines','scope')}
         elif args.command=='controls':out=controls()
         elif args.command=='fit':
