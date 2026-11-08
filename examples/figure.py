@@ -8,4 +8,4 @@ def svg(report):
     for i,(name,value) in enumerate(rows):
         y=145+i*55;s.append(f'<text x="40" y="{y+20}" font-size="17">{name}</text><rect data-score="{value!r}" x="300" y="{y}" width="{value*540:.12f}" height="27" fill="'+('#925593' if name.endswith('*') else '#286b5b')+f'"/><text x="855" y="{y+20}" font-size="17">{value*100:.2f}%</text>')
     s+=['<text x="300" y="725" font-size="16">0%</text><text x="790" y="725" font-size="16">100%</text><text x="40" y="775" font-size="17">Small historical UCI split; not clinical validation, calibrated certainty or a general ranking.</text><text x="40" y="808" font-size="16">Source: original UCI Wisconsin Diagnostic data, CC BY 4.0. Original implementation.</text></g></svg>'];return '\n'.join(s)+'\n'
-if __name__=='__main__':(ROOT/'assets/test-accuracy.svg').write_text(svg(json.loads((ROOT/'marginlab/artifacts/report.json').read_text())))
+if __name__=='__main__':(ROOT/'assets/test-accuracy.svg').write_text(svg(__import__('marginlab.experiment',fromlist=['saved']).saved()))
