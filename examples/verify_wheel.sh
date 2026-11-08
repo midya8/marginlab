@@ -11,11 +11,13 @@ python - <<'PY'
 import importlib,pkgutil,marginlab
 mods=list(pkgutil.walk_packages(marginlab.__path__,marginlab.__name__+'.'))
 for m in mods:importlib.import_module(m.name)
-assert len(mods)==6,[v.name for v in mods]
-print('all seven modules including package root imported outside checkout')
+assert len(mods)==8,[v.name for v in mods]
+print('all nine modules including package root imported outside checkout')
 PY
 python -m marginlab report > report.json
 python -m marginlab controls > controls.json
+python -m marginlab certificate --output proof.json > certificate.json
+python -m marginlab verify-certificate --input proof.json > verified.json
 python -m marginlab audit > audit.json
 python -m marginlab fit --output fresh.json > fit-summary.json
 python -m marginlab audit --report fresh.json > fresh-audit.json
@@ -33,5 +35,6 @@ for a,b in zip(old['candidates'],fresh['candidates']):
  assert a['status']==b['status']
  assert a['test']['confusion']==b['test']['confusion']
 assert len(json.load(open('prediction.json'))['scores'])==2
-print('all five installed commands, eight fresh refits, full pair replay and saved/fresh audits pass')
+assert json.load(open('verified.json'))['valid'] is True
+print('all seven installed commands, eight fresh refits, full pair replay and saved/fresh audits pass')
 PY
