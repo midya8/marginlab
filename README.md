@@ -2,7 +2,7 @@
 
 **A correct label is not a solved optimization problem.**
 
-[Live 30-feature margin inspector](https://midya8.github.io/marginlab/) · [Exact linear proof inspector](https://midya8.github.io/marginlab/certificate.html) · [Equations, protocol and limits](METHOD.md)
+[Live 30-feature margin inspector](https://midya8.github.io/marginlab/) · [Exact linear proof inspector](https://midya8.github.io/marginlab/certificate.html) · [Exact input boxes](https://midya8.github.io/marginlab/box.html) · [Equations, protocol and limits](METHOD.md)
 
 Soft-margin SVM learning from scratch on licensed public UCI data. Two-variable dual updates preserve a linear equality and box constraints; each fit exposes primal/dual values, numerical KKT/feasibility residuals and every accepted pair. NumPy supplies arrays, not an SVM solver. No sklearn SVM, model API, private dataset or diagnostic product.
 
@@ -48,11 +48,11 @@ python -m marginlab predict --input samples.json
 python -m marginlab predict --input samples.json --model-id rbf-10
 python -m marginlab fit --budget 0 --output unfinished.json
 python -m pip wheel . --no-deps -w /tmp/wheels
-python -m pip install --target /tmp/installed /tmp/wheels/marginlab-0.2.0-py3-none-any.whl
+python -m pip install --target /tmp/installed /tmp/wheels/marginlab-0.3.0-py3-none-any.whl
 bash examples/verify_wheel.sh /tmp/installed "$PWD"
 ```
 
-The wheel check imports all nine modules including the package root and exercises all seven commands outside checkout, including eight fresh fits and saved/fresh full replay audits. The browser exporter recreates public data/references without refitting: `python -m marginlab.export`. The score figure is reproducible with `python examples/figure.py`.
+The wheel check imports all eleven modules including the package root and exercises all nine main commands plus the box exporter outside checkout, including eight fresh fits and saved/fresh full replay audits. The browser exporter recreates public data/references without refitting: `python -m marginlab.export`. The score figure is reproducible with `python examples/figure.py`.
 
 ## Inspect the limits
 
@@ -78,3 +78,15 @@ python -m marginlab certificate --model-id linear-1 --output proof.json
 python -m marginlab verify-certificate --input proof.json
 python examples/certificate_export.py
 ```
+
+## Exact input boxes, separate from clinical reliability
+
+Version0.3 adds [finite original-unit boxes](https://midya8.github.io/marginlab/box.html): exact affine minimum/maximum, attaining corners, tie-aware reachable labels and source consistency from every saved coefficient and represented training input. The spread presets are synthetic multiples of training scales, not measurement tolerances or plausible interventions. The certificate is about a declared rational affine function, not production floating-point execution. All30intervals are editable; stale/invalid results refuse export. Independent120exhaustive-corner cases,256direct exact dual endpoint scores and128full native/browser responses check the implementation. Existing fits, scores, data and split are untouched. [BOX.md](BOX.md) derives the established support-function calculation and documents the limits.
+
+```sh
+python -m marginlab box --input examples/box.json --output /tmp/input-box.json
+python -m marginlab verify-box --input /tmp/input-box.json
+python -m marginlab.box_export
+```
+
+No RBF, clinical, causal, domain-validity, generalization, authentication or floating-inference safety guarantee.
