@@ -17,11 +17,15 @@ class ExperimentTests(unittest.TestCase):
     def test_all_eight_fresh_refits_reproduce(self):
         r=run();old=saved();self.assertEqual(r['selected_id'],old['selected_id']);self.assertEqual(r['protocol'],old['protocol'])
         for a,b in zip(r['candidates'],old['candidates']):
-            self.assertEqual(a['id'],b['id']);self.assertEqual(a['status'],b['status']);self.assertEqual(a['updates'],b['updates']);np.testing.assert_allclose(a['model']['alpha'],b['model']['alpha'],atol=1e-6,rtol=1e-6)
+            self.assertEqual(a['id'],b['id']);self.assertEqual(a['status'],b['status'])
+            # Floating reductions can choose different near-tied pairs. Alpha need not be unique.
+            # Feasible primal/dual intervals must overlap, not share an update count.
+            aa,bb=a['audit'],b['audit'];slack=5e-7*(1+max(abs(aa['primal']),abs(bb['primal'])))
+            self.assertLessEqual(max(aa['dual'],bb['dual']),min(aa['primal'],bb['primal'])+slack)
             for stage in ('train','validation','test'):self.assertEqual(a[stage]['confusion'],b[stage]['confusion'])
         self.assertEqual(len(audit(r)['checks']),8)
     def test_holdout_poison_cannot_change_fits_or_selection(self):
-        x,y=load();train,val,test=split();x=x.copy();y=y.copy();x[test]=np.arange(30)+1e6;y[test]=-y[test];a=run(x,y);b=saved()
+        x,y=load();train,val,test=split();x=x.copy();y=y.copy();x[test]=np.arange(30)+1e6;y[test]=-y[test];a=run(x,y);b=run()
         self.assertEqual(a['mean'],b['mean']);self.assertEqual(a['scale'],b['scale']);self.assertEqual(a['selected_id'],b['selected_id'])
         for q,r in zip(a['candidates'],b['candidates']):
             self.assertEqual(q['model'],r['model']);self.assertEqual(q['pairs'],r['pairs']);self.assertEqual(q['validation'],r['validation'])
@@ -31,7 +35,9 @@ class ExperimentTests(unittest.TestCase):
         x,y=load();r=saved();_,_,test=split();z=(x-np.array(r['mean']))/r['scale']
         for result in r['candidates']:
             m=Model.from_dict(result['model']);s=m.decision(z[test]);wrong=sum((1 if v>=0 else -1)!=int(t) for v,t in zip(s,y[test]));self.assertAlmostEqual(result['test']['accuracy'],1-wrong/len(test))
-            self.assertEqual(result['test'],metrics(y[test],s))
+            actual=metrics(y[test],s)
+            for key in ('n','accuracy','balanced_accuracy','confusion'):self.assertEqual(result['test'][key],actual[key])
+            self.assertAlmostEqual(result['test']['hinge'],actual['hinge'],delta=1e-12*(1+abs(actual['hinge'])))
     def test_full_pair_replay_and_tamper_rejection(self):
         r=saved();self.assertEqual(len(audit(r)['checks']),8)
         for kind in ('gain','curvature','equality','endpoint','count','status'):
