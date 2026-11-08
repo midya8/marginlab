@@ -2,7 +2,7 @@
 
 **A correct label is not a solved optimization problem.**
 
-[Live 30-feature margin inspector](https://midya8.github.io/marginlab/) · [Equations, protocol and limits](METHOD.md)
+[Live 30-feature margin inspector](https://midya8.github.io/marginlab/) · [Exact linear proof inspector](https://midya8.github.io/marginlab/certificate.html) · [Equations, protocol and limits](METHOD.md)
 
 Soft-margin SVM learning from scratch on licensed public UCI data. Two-variable dual updates preserve a linear equality and box constraints; each fit exposes primal/dual values, numerical KKT/feasibility residuals and every accepted pair. NumPy supplies arrays, not an SVM solver. No sklearn SVM, model API, private dataset or diagnostic product.
 
@@ -14,7 +14,7 @@ Soft-margin SVM learning from scratch on licensed public UCI data. Two-variable 
 - Eight fits on a frozen 341/113/115 class-stratified split. Training-only scaling and validation-only selection; no validation refit. All candidates visible.
 - Independent scalar JavaScript inference on all 30 editable features, signed feature/kernel terms, honest two-feature decision slices and original-unit inputs.
 - Accuracy-versus-optimization, zero-curvature and nonunique duplicate-support controls.
-- An independent exact-rational active-face KKT oracle for 60 tiny problems. No claim of an exact certificate for the floating-point real-data fits.
+- An independent exact-rational active-face KKT oracle for 60 tiny problems. Original floating-point full-data gaps remain numerical; v0.2 adds separate repaired exact witnesses for the represented linear problems.
 
 ## The result, including the inconvenient part
 
@@ -48,11 +48,11 @@ python -m marginlab predict --input samples.json
 python -m marginlab predict --input samples.json --model-id rbf-10
 python -m marginlab fit --budget 0 --output unfinished.json
 python -m pip wheel . --no-deps -w /tmp/wheels
-python -m pip install --target /tmp/installed /tmp/wheels/marginlab-0.1.0-py3-none-any.whl
+python -m pip install --target /tmp/installed /tmp/wheels/marginlab-0.2.0-py3-none-any.whl
 bash examples/verify_wheel.sh /tmp/installed "$PWD"
 ```
 
-The wheel check imports all seven modules including the package root and exercises all five commands outside checkout, including eight fresh fits and saved/fresh full replay audits. The browser exporter recreates public data/references without refitting: `python -m marginlab.export`. The score figure is reproducible with `python examples/figure.py`.
+The wheel check imports all nine modules including the package root and exercises all seven commands outside checkout, including eight fresh fits and saved/fresh full replay audits. The browser exporter recreates public data/references without refitting: `python -m marginlab.export`. The score figure is reproducible with `python examples/figure.py`.
 
 ## Inspect the limits
 
@@ -67,3 +67,14 @@ The complete report is assembled from `marginlab/artifacts/report.json`, eight r
 ## Cross-platform reproduction
 
 Floating-point reductions can change near-tied pair choices: the published artifact has 275 updates for linear C=0.01, while a Python 3.10 CI run took 267. Reproduction requires the same protocol, selected configuration, stop status and all train/validation/test confusion counts, overlapping numerical primal/dual objective intervals and full pair replay. It does not require identical update counts or dual coefficients, which need not be unique. The full-data intervals are still numerical, with a comparison slack of 5e-7 times (1 + maximum absolute primal value), not exact bounds. The holdout-poison test compares two fresh fits in the same runtime and requires exactly identical fitted models, pair histories and validation metrics. Independent metric recomputation allows 1e-12 times (1 + absolute hinge) for the mean hinge reduction; confusion counts remain exact. No saved model, score, stopping tolerance or data split is changed by these test corrections.
+
+
+## Exact linear proofs, separate from numerical fits
+
+Version 0.2 adds four self-contained exact rational weak-duality proofs for the saved linear models. The original binary64 dual coefficients have a small exact signed residual: clipping and a recorded coefficient reduction make a feasible dual first. Exact feasible primal and dual witnesses then bound the represented standardized training optimum. Two separate readers (Python Fraction and browser BigInt) recompute every constraint and objective without fitting. The [proof derivation](CERTIFICATE.md) explains the scope, exact repair, independent readers and source-binding control. RBF, exact real-number standardization, generalization, authentication and clinical claims are explicitly excluded. The original models, scores and train/validation/test split are unchanged.
+
+```sh
+python -m marginlab certificate --model-id linear-1 --output proof.json
+python -m marginlab verify-certificate --input proof.json
+python examples/certificate_export.py
+```
