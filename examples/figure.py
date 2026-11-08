@@ -1,6 +1,8 @@
 """Reproducible held-out score figure; no fit or model selection."""
 import json
 from pathlib import Path
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 ROOT=Path(__file__).resolve().parents[1]
 def svg(report):
     rows=[(a['id']+(' *' if a['id']==report['selected_id'] else ''),a['test']['accuracy']) for a in report['candidates']]+[('1NN, all 30 features',report['baselines']['test']['nearest_neighbor']['accuracy']),('Training-majority',report['baselines']['test']['majority']['accuracy'])]
