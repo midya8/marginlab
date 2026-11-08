@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "marginlab"
+version = "0.1.0"
+description = "Inspectable soft-margin dual learning with full pair witnesses and real public-data holdout audits"
+requires-python = ">=3.10"
+dependencies = ["numpy==2.2.6"]
+license = "MIT"
+[project.scripts]
+marginlab = "marginlab.__main__:main"
+[tool.setuptools.package-data]
+marginlab = ["data/*", "artifacts/*"]
+[tool.setuptools.packages.find]
+include = ["marginlab*"]
+namespaces = false
