@@ -26,7 +26,7 @@ All eight fits meet both explicit numerical KKT/gap tolerances. A norm/margin sc
 
 ## Reproduce
 
-Python 3.10+; NumPy pinned to 2.2.6. Runtime is offline. Source files and hashes are bundled under CC BY 4.0; code is MIT.
+Python 3.10+; NumPy pinned to 2.2.6. Runtime is offline. Original data and losslessly encoded source metadata with hashes are bundled under CC BY 4.0; code is MIT.
 
 ```sh
 python -m pip install -e .
@@ -59,3 +59,7 @@ The wheel check imports all seven modules including the package root and exercis
 An SVM score is signed, not calibrated certainty. The first-two-feature plot holds the other 28 features at their training means; it is a decision slice, not a projection. Points overlay only two coordinates. An edited input can be implausible. Synthetic controls are not causal ablations, source labels are historical targets, and a few errors on 115 examples do not establish medical reliability.
 
 The optimizer uses a deterministic maximum-violation pair choice, not every heuristic from Platt's original SMO. Dense Gram storage is quadratic; no large-scale speed claim. `budget_exhausted` and `no_progress` remain distinct from numerical tolerance. All formulas, source attribution, C sum-loss convention, exact source hashes and original UCI license are in [METHOD.md](METHOD.md).
+
+## Bounded artifact storage
+
+The complete report is assembled from `marginlab/artifacts/report.json`, eight readable per-candidate JSON files and three bounded linear-10 pair chunks. `saved()` restores all original values and pair order. Each stored text file is below 600 KB to avoid large-file browser-editor truncation. Fresh `fit --output` still writes one complete ordinary JSON report. The source names text is stored as a JSON string so its exact original bytes, including its missing final newline, survive text-editor normalization. Both original source hashes are verified after decoding. This is storage only, not a refit, rounding or change of protocol.
