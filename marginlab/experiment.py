@@ -31,7 +31,34 @@ def run(raw=None,target=None,max_updates=50000):
     for result in candidates:result['test']=metrics(target[test],Model.from_dict(result['model']).decision(z[test]))
     return dict(version=1,protocol=dict(seed=20261108,split_ids={k:v.tolist() for k,v in zip(('train','validation','test'),(train,val,test))},counts={k:len(v) for k,v in zip(('train','validation','test'),(train,val,test))},selection='maximize validation balanced accuracy, then minimize validation mean hinge, then fixed config order; no validation refit',max_updates=max_updates,tolerance=1e-5,C_normalization='P = 0.5 ||w||^2 + C * SUM hinge; not mean hinge'),source_hashes=HASHES,features=FEATURES,mean=mean.tolist(),scale=scale.tolist(),selected_id=selected,candidates=candidates,baselines=baseline,scope='historical public-data educational classifier; not clinical validation or calibrated probabilities')
 
-def saved():return json.loads(ARTIFACT.read_text())
+def write_artifacts(report):
+    """Readable files below 600KB; the assembled report retains every number."""
+    import copy
+    root=ARTIFACT.parent;root.mkdir(exist_ok=True)
+    metadata=copy.deepcopy(report);metadata['candidates']=[]
+    for candidate in report['candidates']:
+        item=copy.deepcopy(candidate);name=candidate['id']+'.json'
+        if len(json.dumps(item,separators=(',',':')))>600000:
+            pairs=item.pop('pairs');item['pair_files']=[]
+            for i in range(0,len(pairs),4000):
+                chunk=candidate['id']+'-pairs-'+str(i//4000)+'.json';item['pair_files'].append(chunk)
+                (root/chunk).write_text(json.dumps(pairs[i:i+4000],separators=(',',':'),allow_nan=False)+'\n')
+        (root/name).write_text(json.dumps(item,separators=(',',':'),allow_nan=False)+'\n');metadata['candidates'].append(name)
+    metadata['artifact_layout']='per-candidate-v1'
+    ARTIFACT.write_text(json.dumps(metadata,separators=(',',':'),allow_nan=False)+'\n')
+
+def saved():
+    report=json.loads(ARTIFACT.read_text())
+    if report.pop('artifact_layout',None)!='per-candidate-v1':raise ValueError('unknown artifact layout')
+    candidates=[]
+    for name in report['candidates']:
+        item=json.loads((ARTIFACT.parent/name).read_text())
+        if 'pair_files' in item:
+            files=item.pop('pair_files');item['pairs']=[]
+            for chunk in files:item['pairs'].extend(json.loads((ARTIFACT.parent/chunk).read_text()))
+        candidates.append(item)
+    report['candidates']=candidates
+    return report
 
 def audit(report):
     rows=[]
@@ -56,4 +83,4 @@ def audit(report):
     return dict(selected_id=report['selected_id'],checks=rows,scope='floating-point numerical residuals and full pair replay, not exact-rational certificates or origin authentication')
 
 if __name__=='__main__':
-    r=run();ARTIFACT.write_text(json.dumps(r,separators=(',',':'),allow_nan=False)+'\n');print(r['selected_id'],r['protocol']['counts']);print([(a['id'],a['status'],a['validation']['balanced_accuracy'],a['test']['accuracy']) for a in r['candidates']]);print(audit(r))
+    r=run();write_artifacts(r);print(r['selected_id'],r['protocol']['counts']);print([(a['id'],a['status'],a['validation']['balanced_accuracy'],a['test']['accuracy']) for a in r['candidates']]);print(audit(r))
