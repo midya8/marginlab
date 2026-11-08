@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 [project]
 name = "marginlab"
-version = "0.2.0"
+version = "0.3.0"
 description = "Inspectable soft-margin dual learning with full pair witnesses and real public-data holdout audits"
 requires-python = ">=3.10"
 dependencies = ["numpy==2.2.6"]
