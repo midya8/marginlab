@@ -1,5 +1,5 @@
 """Original UCI data, IDs excluded; frozen class-stratified split."""
-import csv,hashlib
+import csv,hashlib,json
 from pathlib import Path
 import numpy as np
 DATA=Path(__file__).parent/'data'
@@ -7,7 +7,8 @@ HASHES={'wdbc.data':'d606af411f3e5be8a317a5a8b652b425aaf0ff38ca683d5327ffff94c36
 FEATURES=[stat+' '+name for stat in ('mean','standard error','worst') for name in ('radius','texture','perimeter','area','smoothness','compactness','concavity','concave points','symmetry','fractal dimension')]
 def load():
     for name,h in HASHES.items():
-        if hashlib.sha256((DATA/name).read_bytes()).hexdigest()!=h:raise ValueError('source hash differs: '+name)
+        source=json.loads((DATA/'wdbc.names.json').read_text()).encode() if name=='wdbc.names' else (DATA/name).read_bytes()
+        if hashlib.sha256(source).hexdigest()!=h:raise ValueError('source hash differs: '+name)
     rows=list(csv.reader((DATA/'wdbc.data').open()));x=np.array([[float(v) for v in row[2:]] for row in rows]);y=np.array([1 if row[1]=='M' else -1 for row in rows])
     if x.shape!=(569,30) or set(y)!={-1,1} or not np.isfinite(x).all():raise ValueError('unexpected original data')
     return x,y
