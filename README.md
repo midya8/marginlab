@@ -1,6 +1,6 @@
 # MarginLab
 
-**A correct label is not a solved optimization problem.**
+MarginLab fits soft-margin SVMs on public UCI data and records every accepted pair update. Compare prediction accuracy with optimization gaps, inspect exact linear proofs and edit finite input boxes.
 
 [Live 30-feature margin inspector](https://midya8.github.io/marginlab/) · [Exact linear proof inspector](https://midya8.github.io/marginlab/certificate.html) · [Exact input boxes](https://midya8.github.io/marginlab/box.html) · [Equations, protocol and limits](METHOD.md)
 
@@ -8,15 +8,15 @@ Soft-margin SVM learning from scratch on licensed public UCI data. Two-variable 
 
 > Educational historical-data engineering exercise only. Not clinical validation, medical advice, calibrated probabilities or deployment readiness. Original identifiers are excluded from features and browser data.
 
-## What is real
+## Implementation
 
 - Linear and RBF kernels, analytic bounded pair updates, explicit zero-curvature endpoint handling, full pair replay, separate numerical gap and feasibility checks.
 - Eight fits on a frozen 341/113/115 class-stratified split. Training-only scaling and validation-only selection; no validation refit. All candidates visible.
 - Independent scalar JavaScript inference on all 30 editable features, signed feature/kernel terms, honest two-feature decision slices and original-unit inputs.
 - Accuracy-versus-optimization, zero-curvature and nonunique duplicate-support controls.
-- An independent exact-rational active-face KKT oracle for 60 tiny problems. Original floating-point full-data gaps remain numerical; v0.2 adds separate repaired exact witnesses for the represented linear problems.
+- An independent exact-rational active-face KKT oracle for 60 tiny problems. Original floating-point full-data gaps remain numerical; separate repaired exact witnesses cover the represented linear problems.
 
-## The result, including the inconvenient part
+## Measured result
 
 Validation selects linear C=1: **112/115** test labels correct. Full-30D 1NN gets **111/115** and training-majority **72/115**. RBF C=10 and C=100 each get **113/115**, but are not picked using test scores. This is one small historical split, not a general model ranking or clinical evaluation. Every original candidate is retained.
 
@@ -71,7 +71,7 @@ Floating-point reductions can change near-tied pair choices: the published artif
 
 ## Exact linear proofs, separate from numerical fits
 
-Version 0.2 adds four self-contained exact rational weak-duality proofs for the saved linear models. The original binary64 dual coefficients have a small exact signed residual: clipping and a recorded coefficient reduction make a feasible dual first. Exact feasible primal and dual witnesses then bound the represented standardized training optimum. Two separate readers (Python Fraction and browser BigInt) recompute every constraint and objective without fitting. The [proof derivation](CERTIFICATE.md) explains the scope, exact repair, independent readers and source-binding control. RBF, exact real-number standardization, generalization, authentication and clinical claims are explicitly excluded. The original models, scores and train/validation/test split are unchanged.
+Four self-contained exact rational weak-duality proofs cover the saved linear models. The original binary64 dual coefficients have a small exact signed residual: clipping and a recorded coefficient reduction make a feasible dual first. Exact feasible primal and dual witnesses then bound the represented standardized training optimum. Two separate readers (Python Fraction and browser BigInt) recompute every constraint and objective without fitting. The [proof derivation](CERTIFICATE.md) explains the scope, exact repair, independent readers and source-binding control. RBF, exact real-number standardization, generalization, authentication and clinical claims are explicitly excluded. The original models, scores and train/validation/test split are unchanged.
 
 ```sh
 python -m marginlab certificate --model-id linear-1 --output proof.json
@@ -81,7 +81,7 @@ python examples/certificate_export.py
 
 ## Exact input boxes, separate from clinical reliability
 
-Version0.3 adds [finite original-unit boxes](https://midya8.github.io/marginlab/box.html): exact affine minimum/maximum, attaining corners, tie-aware reachable labels and source consistency from every saved coefficient and represented training input. The spread presets are synthetic multiples of training scales, not measurement tolerances or plausible interventions. The certificate is about a declared rational affine function, not production floating-point execution. All30intervals are editable; stale/invalid results refuse export. Independent120exhaustive-corner cases,256direct exact dual endpoint scores and128full native/browser responses check the implementation. Existing fits, scores, data and split are untouched. [BOX.md](BOX.md) derives the established support-function calculation and documents the limits.
+The [finite original-unit boxes](https://midya8.github.io/marginlab/box.html) report exact affine minimum/maximum, attaining corners, tie-aware reachable labels and source consistency from every saved coefficient and represented training input. The spread presets are synthetic multiples of training scales, not measurement tolerances or plausible interventions. The certificate is about a declared rational affine function, not production floating-point execution. All 30 intervals are editable; stale/invalid results refuse export. The checks include 120 independent exhaustive-corner cases, 256 direct exact dual endpoint scores and 128 full native/browser responses. Existing fits, scores, data and split are untouched. [BOX.md](BOX.md) derives the established support-function calculation and documents the limits.
 
 ```sh
 python -m marginlab box --input examples/box.json --output /tmp/input-box.json
