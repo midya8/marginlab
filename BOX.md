@@ -1,6 +1,6 @@
 # Exact finite input boxes, without a clinical claim
 
-MarginLab v0.3 adds an original educational implementation of established affine support functions. It changes no fit, score, split, source byte, training-objective certificate or model selection. The original clinical/generalization exclusions still apply.
+The input-box inspector implements established affine support functions. It changes no fit, score, split, source byte, training-objective certificate or model selection. The original clinical/generalization exclusions still apply.
 
 ## The declared function
 
@@ -47,29 +47,29 @@ python -m marginlab box --model-id linear-1 --input examples/box.json --output /
 python -m marginlab verify-box --input /tmp/box-proof.json
 ```
 
-`examples/box.json` contains only `center`, `lower`, `upper` arrays of canonical n/d strings. The command derives the affine function from the saved report, or `--report` for a supplied report. `verify-box` checks internal mathematics only; it cannot authenticate a model, input, author or artifact. Changing a declared affine function can produce another valid proof. Browser source consistency is a separate local check, not cryptographic authentication. RBF requests fail explicitly. JSON duplicate keys, unknown fields, booleans, numeric rather than rational input, noncanonical signs/denominators, empty/mismatched vectors and complexity excess refuse. Up to32 features,512-bit vector entries,4096-bit affine bias, bounded rational components/readers prevent unbounded witness parsing; extreme arithmetic outside reader bounds also refuses, not rounds.
+`examples/box.json` contains only `center`, `lower`, `upper` arrays of canonical n/d strings. The command derives the affine function from the saved report, or `--report` for a supplied report. `verify-box` checks internal mathematics only; it cannot authenticate a model, input, author or artifact. Changing a declared affine function can produce another valid proof. Browser source consistency is a separate local check, not cryptographic authentication. RBF requests fail explicitly. JSON duplicate keys, unknown fields, booleans, numeric rather than rational input, noncanonical signs/denominators, empty/mismatched vectors and complexity excess refuse. Up to 32 features, 512-bit vector entries, 4096-bit affine bias, bounded rational components/readers prevent unbounded witness parsing; extreme arithmetic outside reader bounds also refuses, not rounds.
 
-Package reproduction imports every module outside checkout and executes the original commands plus box, verify-box and the box exporter. Four readable artifact chunks below600KB preserve128 full responses:4linear fits x8fixed queries x4spreads. Browser downloads need no API, network endpoint or paid service.
+Package reproduction imports every module outside checkout and executes the original commands plus box, verify-box and the box exporter. Four readable artifact chunks below 600 KB preserve 128 full responses: 4 linear fits x 8 fixed queries x 4 spreads. Browser downloads need no API, network endpoint or paid service.
 
 ## Independent checks
 
--120 tiny1-5D exact cases, all corners exhaustively enumerated independently, including mixed signs, zeros and asymmetric intervals.
--128 complete saved-source reference responses. All256 extremal scores are independently recomputed from the exact dual sum `b + sum_i alpha_i*y_i*sum_j Z_ij*((endpoint_j-mean_j)/scale_j)`, not the affine support implementation.
--Independent Python Fraction/native and JavaScript BigInt browser algorithms, full proof equality, four source-declaration matches.
--Tie cases, zero weights/nonunique corners, point boxes, negative spreads, invalid fractions, field/type/complexity refusal and duplicate JSON.
--Nonmutation of saved fits; valid changed-function control distinguishes internal proof validity from source identity. Actual browser source tampering clears all results and refuses export.
--Actual Chrome128model/query/spread combinations, finite displayed metrics, keyboard selection, edited-state invalidation, invalid intervals/spread, denied/successful clipboard, actual Blob JSON and320/390/1280layout.
+- 120 tiny 1-5D exact cases, all corners exhaustively enumerated independently, including mixed signs, zeros and asymmetric intervals.
+- 128 complete saved-source reference responses. All 256 extremal scores are independently recomputed from the exact dual sum `b + sum_i alpha_i*y_i*sum_j Z_ij*((endpoint_j-mean_j)/scale_j)`, not the affine support implementation.
+- Independent Python Fraction/native and JavaScript BigInt browser algorithms, full proof equality, four source-declaration matches.
+- Tie cases, zero weights/nonunique corners, point boxes, negative spreads, invalid fractions, field/type/complexity refusal and duplicate JSON.
+- Nonmutation of saved fits; valid changed-function control distinguishes internal proof validity from source identity. Actual browser source tampering clears all results and refuses export.
+- Actual Chrome 128 model/query/spread combinations, finite displayed metrics, keyboard selection, edited-state invalidation, invalid intervals/spread, denied/successful clipboard, actual Blob JSON and 320/390/1280 layout.
 
-Existing60rational active-face optima, pair replay, eight fresh fits, frozen-holdout poisoning,4,552native/browser score checks, exact weak-duality proofs and all controls remain. None of these tests establishes clinical reliability, domain-admissible input sets, RBF robustness or floating-point implementation safety.
+Existing 60 rational active-face optima, pair replay, eight fresh fits, frozen-holdout poisoning, 4,552 native/browser score checks, exact weak-duality proofs and all controls remain. None of these tests establishes clinical reliability, domain-admissible input sets, RBF robustness or floating-point implementation safety.
 
 ## Sources and attribution
 
-1. Pantelis Sopasakis, [Support functions](https://am-press.github.io/posts/maths/support-functions/),2022-07-12. Definition, dual-norm relationship and coordinate-separable support motivation. Our finite-box proof uses the definition directly, not the later polyhedral halfspace formulas.
+1. Pantelis Sopasakis, [Support functions](https://am-press.github.io/posts/maths/support-functions/), 2022-07-12. Definition, dual-norm relationship and coordinate-separable support motivation. Our finite-box proof uses the definition directly, not the later polyhedral halfspace formulas.
 2. Giovanni Chierchia, [Box constraints](https://perso.esiee.fr/~chierchg/optimization/content/05/box.html). Nonempty finite intervals and bounds. Projection is not our optimizer; no copied code.
-3. Goodfellow, Shlens and Szegedy, [Explaining and Harnessing Adversarial Examples](https://research.google/pubs/explaining-and-harnessing-adversarial-examples/),ICLR2015. Linear dependence as adversarial-example motivation. No neural-network, training-improvement or empirical robustness claim transferred.
+3. Goodfellow, Shlens and Szegedy, [Explaining and Harnessing Adversarial Examples](https://research.google/pubs/explaining-and-harnessing-adversarial-examples/), ICLR 2015. Linear dependence as adversarial-example motivation. No neural-network, training-improvement or empirical robustness claim transferred.
 4. Fawzi, Fawzi and Frossard, [Analysis of classifiers' robustness to adversarial perturbations](https://ar5iv.labs.arxiv.org/html/1502.02590). Distinguishes adversarial/random perturbations and notes general nonlinear search need not attain an optimum. Their distributional risk/generalization analysis and Euclidean experiments are not our finite-box result.
-5. Python documentation, [fractions](https://docs.python.org/3/library/fractions.html). Exact conversion of represented floats, canonical rational arithmetic. We do not depend on newer formatting APIs; runtime remains Python3.10+.
+5. Python documentation, [fractions](https://docs.python.org/3/library/fractions.html). Exact conversion of represented floats, canonical rational arithmetic. We do not depend on newer formatting APIs; runtime remains Python 3.10+.
 6. Python tutorial, [Floating-point issues and limitations](https://docs.python.org/3/tutorial/floatingpoint.html). Decimal/binary distinction and operation rounding. Exact affine arithmetic is explicitly separate from existing machine inference.
 7. Maurya, Barik and Honorio, [On Exact Solutions of the Inner Optimization Problem of Adversarial Robustness](https://arxiv.org/html/2208.09449v3). Related exact inner optimization and norm constraints. No new algorithm, adversarial-training, Rademacher/generalization bound or experiment claim is borrowed.
 
-Established mathematics, original code and tests, MIT. Existing UCI data and attribution remain CC BY4.0. Attribution is not endorsement.
+Established mathematics, original code and tests, MIT. Existing UCI data and attribution remain CC BY 4.0. Attribution is not endorsement.

@@ -1,6 +1,6 @@
 # Exact declared linear weak-duality bounds
 
-A numerical fit and a feasible exact dual witness are different objects. This extension leaves all original fits, data, split, scores, browser references and score figure unchanged. Only the four fixed linear models are supported; the RBF exponential kernel is explicitly rejected.
+A numerical fit and a feasible exact dual witness are different objects. The proofs leave all original fits, data, split, scores, browser references and score figure unchanged. Only the four fixed linear models are supported; the RBF exponential kernel is explicitly rejected.
 
 ## Which problem is proved
 
