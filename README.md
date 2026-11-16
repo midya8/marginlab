@@ -54,6 +54,23 @@ bash examples/verify_wheel.sh /tmp/installed "$PWD"
 
 The wheel check imports all eleven modules including the package root and exercises all nine main commands plus the box exporter outside checkout, including eight fresh fits and saved/fresh full replay audits. The browser exporter recreates public data/references without refitting: `python -m marginlab.export`. The score figure is reproducible with `python examples/figure.py`.
 
+For the full installed suite, run `python examples/check_installed.py` after
+installing NumPy 2.2.6, setuptools and wheel. It builds a wheel, installs it in a
+new environment and runs all 36 existing Python tests outside the checkout.
+Eleven module origins are checked before and after. Copied tests, exporters,
+static files and data-only archive directories do not include the library's
+Python source. The suite retains the exact oracles, fresh fits, holdout-poison
+control, full pair replay, public-data hashes and figure reproduction.
+
+The helper also compares 11 complete CLI reports covering all nine commands
+through both `python -m marginlab` and the installed `marginlab` command. It
+compares the complete fresh eight-model report, exact linear proof and exact
+box proof as well as their printed summaries. These source/wheel comparisons
+run in the same environment; they do not replace the cross-platform tolerance
+contract below or add independent statistical evidence. CI keeps the original
+wheel smoke job and adds this full installed check as a separate job.
+
+
 ## Inspect the limits
 
 An SVM score is signed, not calibrated certainty. The first-two-feature plot holds the other 28 features at their training means; it is a decision slice, not a projection. Points overlay only two coordinates. An edited input can be implausible. Synthetic controls are not causal ablations, source labels are historical targets, and a few errors on 115 examples do not establish medical reliability.
