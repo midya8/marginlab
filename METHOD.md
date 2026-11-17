@@ -1,6 +1,6 @@
 # Soft-margin learning with explicit residuals
 
-This is an original implementation of established SVM dual optimization, not a new algorithm or a clinical product. [Live inspector](https://midya8.github.io/marginlab/) · [Source](https://github.com/midya8/marginlab)
+This is an original implementation of established SVM dual optimization, not a new algorithm or a clinical product. [Live inspector](https://midya8.github.io/svm-from-scratch/) · [Source](https://github.com/midya8/svm-from-scratch)
 
 ## Objective and conventions
 
