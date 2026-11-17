@@ -1,8 +1,8 @@
-# MarginLab
+# Svm from scratch
 
-MarginLab fits soft-margin SVMs on public UCI data and records every accepted pair update. Compare prediction accuracy with optimization gaps, inspect exact linear proofs and edit finite input boxes.
+Svm from scratch fits soft-margin SVMs on public UCI data and records every accepted pair update. Compare prediction accuracy with optimization gaps, inspect exact linear proofs and edit finite input boxes.
 
-[Live 30-feature margin inspector](https://midya8.github.io/marginlab/) · [Exact linear proof inspector](https://midya8.github.io/marginlab/certificate.html) · [Exact input boxes](https://midya8.github.io/marginlab/box.html) · [Equations, protocol and limits](METHOD.md)
+[Live 30-feature margin inspector](https://midya8.github.io/svm-from-scratch/) · [Exact linear proof inspector](https://midya8.github.io/svm-from-scratch/certificate.html) · [Exact input boxes](https://midya8.github.io/svm-from-scratch/box.html) · [Equations, protocol and limits](METHOD.md)
 
 Soft-margin SVM learning from scratch on licensed public UCI data. Two-variable dual updates preserve a linear equality and box constraints; each fit exposes primal/dual values, numerical KKT/feasibility residuals and every accepted pair. NumPy supplies arrays, not an SVM solver. No sklearn SVM, model API, private dataset or diagnostic product.
 
@@ -98,7 +98,7 @@ python examples/certificate_export.py
 
 ## Exact input boxes, separate from clinical reliability
 
-The [finite original-unit boxes](https://midya8.github.io/marginlab/box.html) report exact affine minimum/maximum, attaining corners, tie-aware reachable labels and source consistency from every saved coefficient and represented training input. The spread presets are synthetic multiples of training scales, not measurement tolerances or plausible interventions. The certificate is about a declared rational affine function, not production floating-point execution. All 30 intervals are editable; stale/invalid results refuse export. The checks include 120 independent exhaustive-corner cases, 256 direct exact dual endpoint scores and 128 full native/browser responses. Existing fits, scores, data and split are untouched. [BOX.md](BOX.md) derives the established support-function calculation and documents the limits.
+The [finite original-unit boxes](https://midya8.github.io/svm-from-scratch/box.html) report exact affine minimum/maximum, attaining corners, tie-aware reachable labels and source consistency from every saved coefficient and represented training input. The spread presets are synthetic multiples of training scales, not measurement tolerances or plausible interventions. The certificate is about a declared rational affine function, not production floating-point execution. All 30 intervals are editable; stale/invalid results refuse export. The checks include 120 independent exhaustive-corner cases, 256 direct exact dual endpoint scores and 128 full native/browser responses. Existing fits, scores, data and split are untouched. [BOX.md](BOX.md) derives the established support-function calculation and documents the limits.
 
 ```sh
 python -m marginlab box --input examples/box.json --output /tmp/input-box.json
